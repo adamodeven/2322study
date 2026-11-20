@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ID2322 Exam Prep</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23eab308'/%3E%3Cpath d='M5 6h4a3 3 0 0 1 3 3v9a2 2 0 0 0-2-2H5zM19 6h-4a3 3 0 0 0-3 3v9a2 2 0 0 1 2-2h5z' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="card sticky">
+    <div class="row">
+      <div class="brand">
+        <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div><h1>ID2322 Exam Prep</h1><p class="sub">Materials &amp; Production</p></div>
+      </div>
+      <a class="toplink" href="slides.html">Slides</a>
+    </div>
+    <div class="row">
+      <div class="stats">
+        <div><div class="stat-l">Score</div><div class="stat-v" id="score">0%</div></div>
+        <div class="vr"></div>
+        <div><div class="stat-l">Progress</div><div class="stat-v" id="prog">0 / 0</div></div>
+      </div>
+      <button class="icon-btn" id="reset" title="New attempt" style="margin-top:1.5rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label class="label">Mode</label>
+    <div class="seg"><button id="m-test">Practice Test (73)</button><button id="m-topic">Topic Practice</button></div>
+    <div class="select" id="topicWrap" hidden>
+      <select id="topic"></select>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="card" id="qcard"></div>
+
+  <div class="card" id="pcard" style="padding:1.5rem">
+    <div class="row" style="margin-bottom:.75rem"><span class="stat-l" style="font-size:.875rem">Overall Progress</span><span class="muted"><span id="pc">0 / 0</span> <span style="color:#d1d5db">|</span> <b style="color:#111827" id="pp">0%</b></span></div>
+    <div class="bar"><div id="pbar" style="width:0%"></div></div>
+  </div>
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ID2322 Slides</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.wrap{max-width:64rem}
+.viewer{position:relative;background:#f3f4f6;border-radius:1.25rem;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+.viewer img{max-width:100%;max-height:100%;display:block}
+.nav{display:flex;gap:.75rem;align-items:center;margin-top:1rem}
+.nav .btn{flex:0 0 auto}
+.pg{flex:1;text-align:center;font-weight:600}
+.pg input{width:4.5rem;padding:.5rem;border:2px solid #e5e7eb;border-radius:.75rem;text-align:center;font-weight:700}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem}
+.thumbs a{display:block;border:3px solid transparent;border-radius:.75rem;overflow:hidden;background:#f3f4f6;position:relative;text-decoration:none}
+.thumbs a.on{border-color:#000}
+.thumbs img{width:100%;display:block;aspect-ratio:4/3;object-fit:contain}
+.thumbs span{position:absolute;bottom:.25rem;right:.35rem;font-size:.7rem;font-weight:700;background:rgba(255,255,255,.9);padding:0 .35rem;border-radius:.4rem}
+@media(max-width:480px){.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="row">
+      <div class="brand">
+        <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div><h1>ID2322 Slides</h1><p class="sub">Lecture decks</p></div>
+      </div>
+      <a class="toplink" href="index.html">&larr; Practice</a>
+    </div>
+    <div class="select"><select id="deck"></select><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="card">
+    <div class="viewer"><img id="slide" alt=""></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev">&larr;<span class="hide-sm"> Prev</span></button>
+      <div class="pg" style="white-space:nowrap"><input id="num" type="number" min="1"> / <span id="tot"></span></div>
+      <button class="btn ghost" id="next"><span class="hide-sm">Next </span>&rarr;</button>
+    </div>
+  </div>
+  <div class="card"><label class="label">All slides in this deck</label><div class="thumbs" id="thumbs"></div></div>
+</div>
+<script src="data.js"></script>
+<script>
+(function(){
+var D = window.DECKS, byId = {}; D.forEach(function(d){ byId[d.id] = d; });
+var $ = function(id){ return document.getElementById(id); };
+var deckSel = $('deck'); deckSel.innerHTML = D.map(function(d){ return '<option value="'+d.id+'">'+d.title+' ('+d.pages+' slides)</option>'; }).join('');
+var cur = { d: D[1].id, p: 1 }, built = null;
+function parse(){
+  var m = location.hash.slice(1).split('/'); var d = byId[m[0]] ? m[0] : cur.d;
+  var p = Math.max(1, Math.min(byId[d].pages, parseInt(m[1], 10) || 1)); cur = { d: d, p: p };
+}
+function src(d, p){ return 'slides/' + d + '/' + p + '.jpg'; }
+function go(d, p){ location.hash = d + '/' + p; }
+function show(){
+  parse(); var d = byId[cur.d];
+  deckSel.value = cur.d; $('slide').src = src(cur.d, cur.p); $('slide').alt = d.title + ' slide ' + cur.p;
+  $('num').value = cur.p; $('num').max = d.pages; $('tot').textContent = d.pages;
+  $('prev').disabled = cur.p <= 1; $('next').disabled = cur.p >= d.pages;
+  document.title = d.title.split(' - ')[0] + ' slide ' + cur.p + ' | ID2322';
+  if (built !== cur.d) {
+    var h = ''; for (var i = 1; i <= d.pages; i++) h += '<a href="#'+cur.d+'/'+i+'" data-p="'+i+'"><img loading="lazy" src="'+src(cur.d,i)+'" alt=""><span>'+i+'</span></a>';
+    $('thumbs').innerHTML = h; built = cur.d;
+  }
+  $('thumbs').querySelectorAll('a').forEach(function(a){ a.className = +a.getAttribute('data-p') === cur.p ? 'on' : ''; });
+  if (cur.p < d.pages) { var n = new Image(); n.src = src(cur.d, cur.p + 1); }
+}
+deckSel.onchange = function(){ go(deckSel.value, 1); };
+$('prev').onclick = function(){ go(cur.d, cur.p - 1); };
+$('next').onclick = function(){ go(cur.d, cur.p + 1); };
+$('num').onchange = function(){ go(cur.d, parseInt($('num').value, 10) || 1); };
+document.addEventListener('keydown', function(e){
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'ArrowLeft' && cur.p > 1) go(cur.d, cur.p - 1);
+  if (e.key === 'ArrowRight' && cur.p < byId[cur.d].pages) go(cur.d, cur.p + 1);
+});
+window.addEventListener('hashchange', function(){ show(); window.scrollTo({top:0}); });
+show();
+})();
+</script>
+</body>
+</html>
