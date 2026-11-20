@@ -24,6 +24,15 @@ function newTopic(deck){
   var s = newSession(ids); s.deck = deck; return s;
 }
 
+var TIME_LIMIT = 60, timer = { id: null, start: 0, stop: null };
+function tick(){
+  var el = $('timer'); if (!el) return;
+  var used = ((timer.stop || Date.now()) - timer.start) / 1000;
+  var left = Math.max(0, Math.ceil(TIME_LIMIT - used));
+  el.textContent = left > 0 ? Math.floor(left / 60) + ':' + ('0' + left % 60).slice(-2) : "Time's up";
+  el.className = 'timer' + (left === 0 ? ' up' : left <= 10 ? ' low' : '') + (timer.stop ? ' done' : '');
+}
+setInterval(tick, 250);
 var state;
 try { state = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e) { state = null; }
 function valid(s){ return s && s.queue && s.queue.every(function(id){ return byId[id]; }); }
@@ -79,12 +88,13 @@ function renderQuestion(s, st){
   var picked = s.picked != null ? s.picked : null;
   var h = '';
   h += '<div class="row"><span class="pill"><span class="short">' + esc(weekShort(d.title)) + '</span><span class="long">' + esc(weekLong(d.title)) + '</span></span>';
-  if (q.h) h += '<button class="hint-btn" id="hintBtn">' + (s.hint ? 'Hide Hint' : 'Show Hint') + '</button>';
+  if (timer.id !== q.id) { timer.id = q.id; timer.start = Date.now(); timer.stop = null; }
+  if (a && timer.stop == null) timer.stop = Date.now();
+  h += '<span class="timer" id="timer"></span>';
   h += '</div>';
   h += '<div class="qnum">Question ' + (Math.min(st.answered + (a ? 0 : 1), st.total)) + ' of ' + st.total + '</div>';
   h += '<h2>' + esc(q.q) + '</h2>';
   if (q.i) h += '<img class="qimg" src="' + esc(q.i) + '" alt="">';
-  if (q.h && s.hint) h += '<div class="hint">' + esc(q.h) + '</div>';
   h += '<div class="opts">';
   perm.forEach(function(oi, k){
     var cls = 'opt';
@@ -102,7 +112,7 @@ function renderQuestion(s, st){
   }
   var card = $('qcard'); card.innerHTML = h;
 
-  var hb = $('hintBtn'); if (hb) hb.onclick = function(){ s.hint = !s.hint; save(); render(); };
+  tick();
   if (!a) {
     card.querySelectorAll('.opt').forEach(function(b){ b.onclick = function(){ s.picked = +b.getAttribute('data-oi'); render(); }; });
     $('check').onclick = function(){
