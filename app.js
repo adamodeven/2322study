@@ -33,6 +33,12 @@ function tick(){
   el.className = 'timer' + (left === 0 ? ' up' : left <= 10 ? ' low' : '') + (timer.stop ? ' done' : '');
 }
 setInterval(tick, 250);
+function scrollToQ(){
+  var card = $('qcard'), hdr = document.querySelector('.card.sticky');
+  var sticky = hdr && getComputedStyle(hdr).position === 'sticky';
+  var off = sticky ? hdr.getBoundingClientRect().bottom + 12 : 12;
+  window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - off), behavior: 'smooth' });
+}
 var state;
 try { state = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e) { state = null; }
 function valid(s){ return s && s.queue && s.queue.every(function(id){ return byId[id]; }); }
@@ -124,10 +130,10 @@ function renderQuestion(s, st){
     };
     $('skip').onclick = function(){
       s.queue.splice(s.queue.indexOf(q.id), 1); s.queue.push(q.id);
-      s.cur = null; s.picked = null; s.hint = false; save(); render();
+      s.cur = null; s.picked = null; s.hint = false; save(); render(); scrollToQ();
     };
   } else {
-    $('next').onclick = function(){ delete a.showing; s.cur = null; s.hint = false; save(); render(); window.scrollTo({top:0, behavior:'smooth'}); };
+    $('next').onclick = function(){ delete a.showing; s.cur = null; s.hint = false; save(); render(); scrollToQ(); };
   }
 }
 
