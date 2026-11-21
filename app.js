@@ -107,8 +107,10 @@ function renderQuestion(s, st){
     h += '<div class="feedback ' + (a.ok ? 'ok' : 'bad') + '">' + (a.ok ? 'Correct.' : 'Not quite. The answer is ' + 'abcd'[perm.indexOf(q.a)] + ') ' + esc(q.o[q.a]) + '.') +
       '<br><a class="src" href="' + slideUrl(q.d, q.p) + '" target="_blank" rel="noopener">See ' + esc(weekShort(d.title)) + ', slide ' + q.p + ' &rarr;</a></div>';
     h += '<div class="actions"><button class="btn" id="next">' + (remaining(s).length ? 'Next Question' : 'See Results') + '</button></div>';
+    h += '<div class="keys">Space: next</div>';
   } else {
     h += '<div class="actions"><button class="btn" id="check"' + (picked == null ? ' disabled' : '') + '>Check Answer</button><button class="btn ghost" id="skip" title="Skip this question"' + (remaining(s).length < 2 ? ' disabled' : '') + '>Skip</button></div>';
+    h += '<div class="keys">Keys: 1-4 select, Space: check answer</div>';
   }
   var card = $('qcard'); card.innerHTML = h;
 
@@ -168,6 +170,22 @@ function renderResults(s, st){
   $('qcard').innerHTML = h;
   $('again').onclick = function(){ $('reset').click(); };
 }
+
+document.addEventListener('keydown', function(e){
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  var t = e.target && e.target.tagName;
+  if (t === 'SELECT' || t === 'INPUT' || t === 'TEXTAREA') return;
+  var s = S(); if (s.cur == null) return;
+  var a = s.ans[s.cur];
+  if (/^[1-4]$/.test(e.key) && !a) {
+    var btn = document.querySelectorAll('#qcard .opt')[+e.key - 1];
+    if (btn) { e.preventDefault(); btn.click(); }
+  } else if (e.key === ' ' || e.code === 'Space') {
+    e.preventDefault();
+    var b = $(a ? 'next' : 'check');
+    if (b && !b.disabled) b.click();
+  }
+});
 
 render();
 })();

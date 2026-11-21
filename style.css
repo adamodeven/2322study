@@ -79,3 +79,5 @@ details.review summary{cursor:pointer;font-weight:600}
 .timer.low{background:#fef3c7;color:#b45309}
 .timer.up{background:#fee2e2;color:#b91c1c}
 .timer.done{opacity:.6}
+.keys{margin-top:.75rem;text-align:center;font-size:.75rem;color:#9ca3af;font-weight:500}
+@media(hover:none){.keys{display:none}}
